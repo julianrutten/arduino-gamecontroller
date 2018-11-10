@@ -3,26 +3,30 @@
 #include "Button.h"
 
 Button::Button(uint8_t pinNumber,uint8_t buttonsBefore) {
-    init(pinNumber,buttonsBefore, false, false);
+    init(pinNumber,buttonsBefore, false, false,false);
 }
 
 Button::Button(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe) {
-    init(pinNumber,buttonsBefore, toggleMe, false);
+    init(pinNumber,buttonsBefore, toggleMe, false,false);
 }
  
 Button::Button(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleMeSeperately) {
-    init(pinNumber,buttonsBefore, toggleMe, toggleMeSeperately);
+    init(pinNumber,buttonsBefore, toggleMe, toggleMeSeperately,false);
 }
-
-void Button::init(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleMeSeperately){
+Button::Button(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleMeSeperately, bool invertMe) {
+    init(pinNumber,buttonsBefore, toggleMe, toggleMeSeperately,invertMe);
+}
+void Button::init(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleMeSeperately, bool invertMe){
+  
   pinMode(pinNumber,INPUT_PULLUP);
   pin = pinNumber;
   //Only push button when states change
   isToggle = toggleMe;
   //Reserve 1 button for the optional toggle, to avoid button reassignment in games when changing controller layout.
-  number = (buttonsBefore * 2) + 1;
+  number = (buttonsBefore * 2);
    //Will push the reserved button when changing states on falling edge
   toggleSeperately = toggleMeSeperately;
+  invert = invertMe;
 }
 String Button::message(ButtonPushResponse *response){
   String message = response->pushed ? "Pushed" : "Released";
@@ -39,6 +43,9 @@ ButtonPushResponse Button::push(bool rising, Joystick_ *joystick){
 ButtonPushResponse Button::refresh(Joystick_ *joystick){
     bool nextState = digitalRead(pin) == HIGH;
     if(!isToggle){
+      if(invert){
+        nextState = !nextState;
+      }
       if(nextState != state){
         state = !state;
         joystick->setButton(number,nextState ? HIGH : LOW);

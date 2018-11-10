@@ -15,8 +15,9 @@ class Button {
       Button(uint8_t pinNumber,uint8_t buttonsBefore);
       Button(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe);
       Button(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleSeperately);
+      Button(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleSeperately,bool invertMe);
 
-      void init(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleSeperately);
+      void init(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleSeperately,bool invertMe);
       ButtonPushResponse refresh(Joystick_ *joystick);
           String message(ButtonPushResponse *response);
   private:
@@ -24,6 +25,7 @@ class Button {
        
       bool isToggle;
       bool toggleSeperately;
+      bool invert;
       uint8_t number;
       bool state;
       bool pushing;
