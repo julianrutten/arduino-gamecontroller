@@ -17,8 +17,8 @@ Button::Button(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool togg
     init(pinNumber,buttonsBefore, toggleMe, toggleMeSeperately,invertMe);
 }
 void Button::init(uint8_t pinNumber,uint8_t buttonsBefore, bool toggleMe, bool toggleMeSeperately, bool invertMe){
-  
-  pinMode(pinNumber,INPUT_PULLUP);
+  pinMode(pinNumber,INPUT);
+  digitalWrite(pinNumber,HIGH);
   pin = pinNumber;
   //Only push button when states change
   isToggle = toggleMe;
@@ -42,10 +42,10 @@ ButtonPushResponse Button::push(bool rising, Joystick_ *joystick){
 
 ButtonPushResponse Button::refresh(Joystick_ *joystick){
     bool nextState = digitalRead(pin) == HIGH;
+    if(invert){
+      nextState = !nextState;
+    }
     if(!isToggle){
-      if(invert){
-        nextState = !nextState;
-      }
       if(nextState != state){
         state = !state;
         joystick->setButton(number,nextState ? HIGH : LOW);
@@ -76,11 +76,13 @@ ButtonPushResponse Button::refresh(Joystick_ *joystick){
 };
 
 void ButtonManager::tick(String* messages){
+    uint8_t messageCount = 0;
     for( unsigned int i = 0; i < buttonCount; i = i + 1 ){
         ButtonPushResponse response = buttons[i].refresh(joystick); 
         if(response.pushed || response.released){
           String message = buttons[i].message(&response);
-          messages[i] = message;
+          messages[messageCount] = message;
+          messageCount++;
         }
     }
 }

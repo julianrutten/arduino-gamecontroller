@@ -14,9 +14,16 @@ LiquidCrystal_I2C lcd(LCD_ADDRESS, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); // Set the
 
 Joystick_ joystick;
 Button buttons[] = {
-  Button(A0,0,false,false,false),
-};
-ButtonManager buttonManager(buttons,sizeof(buttons) / sizeof(Button),&joystick);
+  Button(A0,0,true,true),
+  Button(A1,1,true,true),
+  Button(A2,2,true),
+  Button(A3,3,true,true),
+  Button(4,4,true,true),
+  Button(5,5,true,true),
+  Button(6,6,true,true)
+  };
+uint8_t buttonCount = sizeof(buttons) / sizeof(Button);
+ButtonManager buttonManager(buttons,buttonCount,&joystick);
 
 int currentLine = 0;
 void setup() {
@@ -53,7 +60,7 @@ void printMessages(String messages[LCD_ROWS]){
 void loop() {
   long startedAt = millis();
 
-  String messages[LCD_ROWS];
+  String messages[buttonCount];
   buttonManager.tick(messages);
   
   if(LCD_ADDRESS != false){
