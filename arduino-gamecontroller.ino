@@ -15,15 +15,15 @@ LiquidCrystal_I2C lcd(LCD_ADDRESS, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); // Set the
 
 Joystick_ joystick;
 Button buttons[] = {
-  Button(4,0),
-  Button(5,1),
-  Button(6,2),
-  Button(7,3),
-  Button(8,4),
-  Button(9,5),
-  Button(10,6),
-  Button(11,7),
-  Button(12,8,false,false,true),
+  Button(4,0,false,false,true),
+  Button(5,1,false,false,true),
+  Button(6,2,false,false,true),
+  Button(7,3,false,false,true),
+  Button(8,4,false,false,true),
+  Button(9,5,false,false,true),
+  Button(10,6,false,false,true),
+  Button(11,7,false,false,true),
+  Button(12,8,false,false,true)
 };
 uint8_t buttonCount = sizeof(buttons) / sizeof(Button);
 ButtonManager buttonManager(buttons,buttonCount,&joystick);
