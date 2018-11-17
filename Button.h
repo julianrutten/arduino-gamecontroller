@@ -2,8 +2,7 @@
 #ifndef DEBUG
 #define DEBUG false
 #endif
-class ButtonPushResponse {
-  public:
+struct ButtonPushResponse {
     bool pushed;
     bool released;
     uint8_t number;

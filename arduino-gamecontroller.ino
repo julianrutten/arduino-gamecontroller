@@ -6,9 +6,10 @@
 #define LCD_ADDRESS 0x27
 #define LCD_MAXCHARS 20
 #define LCD_ROWS 4
-#define HZ 20
+#define HZ 40
 #define DEBUG 1
 #include "Button.h"
+#include "Axis.h"
 
 LiquidCrystal_I2C lcd(LCD_ADDRESS, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); // Set the LCD I2C address
 
@@ -20,10 +21,16 @@ Button buttons[] = {
   Button(A3,3,true,true),
   Button(4,4,true,true),
   Button(5,5,true,true),
-  Button(6,6,true,true)
+  Button(6,6,true)
   };
 uint8_t buttonCount = sizeof(buttons) / sizeof(Button);
 ButtonManager buttonManager(buttons,buttonCount,&joystick);
+
+Axis axes[] = {
+   Axis(A4,0)
+};
+uint8_t axesCount = sizeof(axes) / sizeof(Axis);
+AxisManager axesManager(axes,axesCount,&joystick);
 
 int currentLine = 0;
 void setup() {
@@ -60,13 +67,17 @@ void printMessages(String messages[LCD_ROWS]){
 void loop() {
   long startedAt = millis();
 
-  String messages[buttonCount];
-  buttonManager.tick(messages);
+  String buttonMessages[buttonCount];
+  buttonManager.tick(buttonMessages);
+
+  String axesMessages[axesCount];
+  axesManager.tick(axesMessages);
   
   if(LCD_ADDRESS != false){
-    printMessages(messages);
+    printMessages(buttonMessages);
+//    printMessages(axes Messages);
   }
-
+  
   //Sleep if we can
   int sleep = (1000 / HZ) - (millis() - startedAt);
   if(sleep > 0){
